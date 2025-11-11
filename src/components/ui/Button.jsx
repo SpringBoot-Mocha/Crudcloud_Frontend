@@ -28,7 +28,7 @@ const Button = React.forwardRef(({
     <button
       ref={ref}
       disabled={disabled || isLoading}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${!className?.includes('w-') ? '' : ''} ${className}`}
       {...props}
     >
       {isLoading ? (
