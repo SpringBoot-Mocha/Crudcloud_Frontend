@@ -1,0 +1,169 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PublicLayout from '../../layouts/PublicLayout';
+import { Card, Button, Badge } from '../../components/ui';
+
+const PricingPage = () => {
+  const plans = [
+    {
+      name: 'Free',
+      price: 0,
+      currency: 'USD',
+      period: '/mes',
+      description: 'Perfecto para comenzar',
+      features: [
+        { text: 'Hasta 2 instancias', included: true },
+        { text: '1GB almacenamiento por instancia', included: true },
+        { text: 'Soporte por email', included: true },
+        { text: 'Acceso a documentación', included: true },
+        { text: 'SLA 99%', included: false },
+        { text: 'Soporte prioritario', included: false },
+      ],
+      highlighted: false,
+      cta: 'Comenzar',
+    },
+    {
+      name: 'Standard',
+      price: 29,
+      currency: 'USD',
+      period: '/mes',
+      description: 'Para proyectos en crecimiento',
+      features: [
+        { text: 'Hasta 5 instancias', included: true },
+        { text: '10GB almacenamiento por instancia', included: true },
+        { text: 'Soporte por email y chat', included: true },
+        { text: 'Acceso a documentación', included: true },
+        { text: 'SLA 99.5%', included: true },
+        { text: 'Soporte prioritario', included: false },
+      ],
+      highlighted: true,
+      cta: 'Actualizar',
+    },
+    {
+      name: 'Premium',
+      price: 99,
+      currency: 'USD',
+      period: '/mes',
+      description: 'Para aplicaciones empresariales',
+      features: [
+        { text: 'Hasta 10 instancias', included: true },
+        { text: '100GB almacenamiento por instancia', included: true },
+        { text: 'Soporte 24/7 por teléfono', included: true },
+        { text: 'Acceso a documentación', included: true },
+        { text: 'SLA 99.9%', included: true },
+        { text: 'Soporte prioritario', included: true },
+      ],
+      highlighted: false,
+      cta: 'Actualizar',
+    },
+  ];
+
+  return (
+    <PublicLayout>
+      {/* Header */}
+      <section className="text-center py-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Planes Simples y Transparentes
+        </h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          Elige el plan que mejor se adapte a tu necesidad. Sin sorpresas. Sin contratos de larga duración.
+        </p>
+      </section>
+
+      {/* Pricing Cards */}
+      <section className="py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {plans.map((plan, index) => (
+            <Card
+              key={index}
+              className={`flex flex-col transition-transform ${
+                plan.highlighted ? 'ring-2 ring-blue-600 scale-105' : ''
+              }`}
+            >
+              {plan.highlighted && (
+                <Badge variant="primary" className="mb-4 w-fit">
+                  Más Popular
+                </Badge>
+              )}
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                {plan.name}
+              </h3>
+              <p className="text-gray-600 mb-6">{plan.description}</p>
+
+              <div className="mb-6">
+                <div className="text-4xl font-bold text-gray-900">
+                  ${plan.price}
+                </div>
+                <p className="text-gray-600">{plan.period}</p>
+              </div>
+
+              <Link to="/register" className="mb-8">
+                <Button
+                  variant={plan.highlighted ? 'primary' : 'outline'}
+                  size="lg"
+                  className="w-full"
+                >
+                  {plan.cta}
+                </Button>
+              </Link>
+
+              <div className="space-y-4 flex-1">
+                {plan.features.map((feature, fIndex) => (
+                  <div key={fIndex} className="flex items-start gap-3">
+                    <span
+                      className={`text-xl ${
+                        feature.included ? 'text-green-600' : 'text-gray-400'
+                      }`}
+                    >
+                      {feature.included ? '✓' : '✗'}
+                    </span>
+                    <span
+                      className={feature.included ? 'text-gray-900' : 'text-gray-500'}
+                    >
+                      {feature.text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20">
+        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+          Preguntas Frecuentes
+        </h2>
+        <div className="max-w-2xl mx-auto space-y-6">
+          <Card>
+            <h4 className="font-bold text-gray-900 mb-2">
+              ¿Puedo cambiar de plan en cualquier momento?
+            </h4>
+            <p className="text-gray-600">
+              Sí, puedes actualizar o degradar tu plan en cualquier momento. Los cambios se aplicarán en el próximo ciclo de facturación.
+            </p>
+          </Card>
+          <Card>
+            <h4 className="font-bold text-gray-900 mb-2">
+              ¿Hay período de prueba gratuita?
+            </h4>
+            <p className="text-gray-600">
+              Sí, el plan Free incluye hasta 2 instancias sin costo. Puedes usarlas todo el tiempo que necesites.
+            </p>
+          </Card>
+          <Card>
+            <h4 className="font-bold text-gray-900 mb-2">
+              ¿Qué pasa si excedo el límite de instancias?
+            </h4>
+            <p className="text-gray-600">
+              Se te notificará cuando estés cerca del límite. No podrás crear nuevas instancias hasta actualizar tu plan.
+            </p>
+          </Card>
+        </div>
+      </section>
+    </PublicLayout>
+  );
+};
+
+export default PricingPage;
