@@ -186,11 +186,3 @@ Este proyecto está bajo la licencia MIT.
 
 
 
-feat: professional structure setup and new Azure Blue palette 
- 
-- Create folders: pages, components, hooks, services, context, utils, styles  
-- Implement Azure Blue color palette (#0066CC)
-- Create CSS variables with full scale
-- Configure Tailwind with new colors
-- Setup base files for API, Auth Context, and services
-- npm install axios for HTTP client
