@@ -18,10 +18,8 @@ import { ProtectedRoute } from '../components/auth';
 // Dashboard Pages
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import InstancesPage from '../pages/dashboard/InstancesPage';
-
-// Placeholder pages (crearemos después)
-const PlansPage = () => <DashboardLayout><div className="p-6"><h1>Plans Page - Próximamente</h1></div></DashboardLayout>;
-const ProfilePage = () => <DashboardLayout><div className="p-6"><h1>Profile Page - Próximamente</h1></div></DashboardLayout>;
+import PlansPage from '../pages/dashboard/PlansPage';
+import ProfilePage from '../pages/dashboard/ProfilePage';
 
 const AppRoutes = () => {
   return (
