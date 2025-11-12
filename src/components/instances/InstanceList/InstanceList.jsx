@@ -1,11 +1,12 @@
 import React from 'react';
 import { Spinner } from '../../ui';
 import InstanceCard from '../InstanceCard/InstanceCard';
+import { Database } from 'lucide-react';
 
 const InstanceList = ({ instances, loading, onDelete, onStatusChange, onRotatePassword }) => {
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-12">
+      <div className="flex justify-center items-center py-16">
         <Spinner size="lg" />
       </div>
     );
@@ -13,10 +14,15 @@ const InstanceList = ({ instances, loading, onDelete, onStatusChange, onRotatePa
 
   if (!instances || instances.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-lg">
-        <p className="text-gray-600 mb-2">No hay instancias creadas aún</p>
-        <p className="text-sm text-gray-500">
-          Crea tu primera instancia para comenzar
+      <div className="rounded-xl border border-slate-200/50 bg-white/60 backdrop-blur-sm px-8 py-16 text-center">
+        <div className="flex justify-center mb-4">
+          <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-100">
+            <Database size={28} className="text-slate-400" />
+          </div>
+        </div>
+        <p className="text-slate-900 font-medium mb-2">No hay instancias todavía</p>
+        <p className="text-sm text-slate-500">
+          Crea tu primera instancia de base de datos para comenzar
         </p>
       </div>
     );

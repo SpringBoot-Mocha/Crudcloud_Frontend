@@ -6,14 +6,14 @@
 const ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh',
-    ME: '/auth/me',
-    VERIFY_EMAIL: '/auth/verify-email',
-    FORGOT_PASSWORD: '/auth/forgot-password',
-    RESET_PASSWORD: '/auth/reset-password',
+    LOGIN: '/v1/auth/login',
+    REGISTER: '/v1/auth/register',
+    LOGOUT: '/v1/auth/logout',
+    REFRESH: '/v1/auth/refresh',
+    ME: '/v1/auth/me',
+    VERIFY_EMAIL: '/v1/auth/verify-email',
+    FORGOT_PASSWORD: '/v1/auth/forgot-password',
+    RESET_PASSWORD: '/v1/auth/reset-password',
   },
 
   // Users

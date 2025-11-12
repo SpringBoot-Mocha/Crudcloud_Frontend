@@ -1,18 +1,20 @@
 import { apiClient } from '../api/client';
+import ENDPOINTS from '../api/endpoints';
 
 const authService = {
   register: async (email, password, firstName = '', lastName = '') => {
-    const response = await apiClient.post('/api/v1/auth/register', {
+    const name = `${firstName} ${lastName}`.trim();
+    const response = await apiClient.post(ENDPOINTS.AUTH.REGISTER, {
       email,
       password,
-      firstName,
-      lastName,
+      name,
+      isOrganization: false,
     });
     return response.data;
   },
 
   login: async (email, password) => {
-    const response = await apiClient.post('/api/v1/auth/login', {
+    const response = await apiClient.post(ENDPOINTS.AUTH.LOGIN, {
       email,
       password,
     });

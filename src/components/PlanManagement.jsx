@@ -110,10 +110,10 @@ const PlanManagement = () => {
   return (
     <div className="space-y-8">
       {/* Current Plan Overview */}
-      <div className="bg-gradient-to-r from-slate-900 via-violet-900 to-slate-900 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-slate-900 via-brand-900 to-slate-900 rounded-2xl p-8 text-white shadow-lg">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-violet-300 text-sm mb-2">Plan Actual</p>
+            <p className="text-brand-300 text-sm mb-2">Plan Actual</p>
             <h2 className="text-3xl font-bold mb-2">{currentPlan.name}</h2>
             <p className="text-violet-200">
               Activo desde el {new Date(currentPlan.startDate).toLocaleDateString('es-ES', {

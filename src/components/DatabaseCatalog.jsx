@@ -148,7 +148,7 @@ const DatabaseCatalog = () => {
               </div>
 
               {/* Create Button */}
-              <button className="w-full bg-gradient-to-r from-violet-500 to-violet-600 text-white py-3 rounded-lg font-semibold hover:from-violet-600 hover:to-violet-700 transition flex items-center justify-center gap-2 group">
+              <button className="w-full bg-gradient-to-r from-brand-600 to-brand-700 text-white py-3 rounded-lg font-semibold hover:from-brand-700 hover:to-brand-800 transition flex items-center justify-center gap-2 group">
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
                 Crear Instancia
               </button>
@@ -214,7 +214,7 @@ const DatabaseCatalog = () => {
                 >
                   Cancelar
                 </button>
-                <button className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-violet-500 to-violet-600 text-white font-semibold hover:from-violet-600 hover:to-violet-700 transition">
+                <button className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-brand-600 to-brand-700 text-white font-semibold hover:from-brand-700 hover:to-brand-800 transition">
                   Crear Instancia
                 </button>
               </div>

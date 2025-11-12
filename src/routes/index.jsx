@@ -20,6 +20,7 @@ import DashboardPage from '../pages/dashboard/DashboardPage';
 import InstancesPage from '../pages/dashboard/InstancesPage';
 import PlansPage from '../pages/dashboard/PlansPage';
 import ProfilePage from '../pages/dashboard/ProfilePage';
+import SettingsPage from '../pages/dashboard/SettingsPage';
 
 const AppRoutes = () => {
   return (
@@ -78,6 +79,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
             </ProtectedRoute>
           }
         />
