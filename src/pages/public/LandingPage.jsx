@@ -190,7 +190,7 @@ const LandingPage = () => {
                 }}
                 className="group"
               >
-                <div className="relative p-8 bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-elevation-4 transition-all duration-500">
+                <div className="relative p-8 bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500">
                   {/* Icon Background */}
                   <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
                     <feature.icon className="w-8 h-8 text-white" />
@@ -298,7 +298,7 @@ const LandingPage = () => {
                   ease: "easeOut"
                 }}
                 whileHover={{ y: -8 }}
-                className={`relative bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-elevation-4 transition-all duration-500 ${
+                className={`relative bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500 ${
                   plan.popular ? 'ring-2 ring-brand-500' : ''
                 }`}
               >
@@ -397,7 +397,7 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white p-8 rounded-3xl shadow-elevation-2 border border-slate-100"
+                className="bg-white p-8 rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-brand-500 to-brand-600 rounded-full flex items-center justify-center text-white text-lg">
