@@ -1,22 +1,31 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
 import { Button, Input } from '../../ui';
 import { useAuth } from '../../../hooks/useAuth';
-import { useForm } from '../../../hooks/useForm';
 
 const LoginForm = ({ onSuccess = null }) => {
   const { login } = useAuth();
-  const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm(
-    { email: '', password: '' },
-    async (formValues) => {
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
+
+  const onSubmit = async (formValues) => {
+    try {
       await login(formValues.email, formValues.password);
       if (onSuccess) onSuccess();
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Error en el inicio de sesión';
+      setError('submit', { type: 'manual', message: errorMessage });
     }
-  );
+  };
 
   return (
     <motion.form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -30,14 +39,17 @@ const LoginForm = ({ onSuccess = null }) => {
         <Input
           label="Email"
           type="email"
-          name="email"
-          value={values.email}
-          onChange={handleChange}
-          error={errors.email}
+          {...register('email', {
+            required: 'Email es requerido',
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'Email inválido'
+            }
+          })}
+          error={errors.email?.message}
           placeholder="tu@email.com"
           variant="outlined"
           size="lg"
-          required
         />
       </motion.div>
 
@@ -49,14 +61,17 @@ const LoginForm = ({ onSuccess = null }) => {
         <Input
           label="Contraseña"
           type="password"
-          name="password"
-          value={values.password}
-          onChange={handleChange}
-          error={errors.password}
+          {...register('password', {
+            required: 'Contraseña es requerida',
+            minLength: {
+              value: 6,
+              message: 'Contraseña debe tener al menos 6 caracteres'
+            }
+          })}
+          error={errors.password?.message}
           placeholder="••••••••"
           variant="outlined"
           size="lg"
-          required
         />
       </motion.div>
 
@@ -66,7 +81,7 @@ const LoginForm = ({ onSuccess = null }) => {
           animate={{ opacity: 1, scale: 1 }}
           className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
         >
-          {errors.submit}
+          {errors.submit.message}
         </motion.div>
       )}
 

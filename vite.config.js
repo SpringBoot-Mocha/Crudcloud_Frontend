@@ -15,7 +15,7 @@ export default defineConfig({
         manualChunks: {
           // Separar librerías grandes en chunks independientes
           'vendor-react': ['react', 'react-dom'],
-          'vendor-animation': ['framer-motion', 'react-spring'],
+          'vendor-animation': ['framer-motion'],
           'vendor-ui': ['lucide-react'],
           'vendor-utils': ['clsx', 'zod'],
         },

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import authService from '../services/authService';
+import subscriptionService from '../services/subscriptionService';
 
 export const AuthContext = createContext();
 
@@ -26,6 +27,16 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.login(email, password);
       setUser(response.user);
       setIsAuthenticated(true);
+
+      // Fetch and store current subscription
+      try {
+        const subscription = await subscriptionService.getCurrentSubscription(response.user.userId);
+        localStorage.setItem('currentSubscription', JSON.stringify(subscription));
+      } catch (error) {
+        console.warn('Could not fetch current subscription:', error.message);
+        // Continue even if subscription fetch fails - user might not have one yet
+      }
+
       return response;
     } catch (error) {
       setIsAuthenticated(false);
@@ -50,6 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     authService.logout();
+    localStorage.removeItem('currentSubscription');
     setUser(null);
     setIsAuthenticated(false);
   };

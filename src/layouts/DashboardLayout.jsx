@@ -10,6 +10,21 @@ const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const userMenuRef = React.useRef(null);
+
+  // Cerrar menú al hacer click fuera
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isUserMenuOpen]);
 
   const handleLogout = () => {
     logout();
@@ -95,7 +110,7 @@ const DashboardLayout = ({ children }) => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-visible">
         {/* Header - Premium Minimal */}
         <header className="bg-white border-b border-slate-200/50 backdrop-blur-sm">
           <div className="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -120,7 +135,7 @@ const DashboardLayout = ({ children }) => {
             {/* Right Side - User Menu */}
             <div className="flex items-center gap-4">
               {/* User Info & Menu */}
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors duration-200 group"
@@ -139,7 +154,10 @@ const DashboardLayout = ({ children }) => {
 
                 {/* User Dropdown Menu */}
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-white border border-slate-200/50 shadow-lg z-40 overflow-hidden animate-fade-in">
+                  <div
+                    className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-white border border-slate-200/50 shadow-lg z-[9999] overflow-hidden animate-fade-in"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {/* User Info Section */}
                     <div className="px-4 py-3 border-b border-slate-100/50 bg-slate-50/50">
                       <p className="text-sm font-medium text-slate-900">{user?.email}</p>
@@ -169,7 +187,8 @@ const DashboardLayout = ({ children }) => {
                     {/* Logout Button */}
                     <div className="px-4 py-2 border-t border-slate-100/50">
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setIsUserMenuOpen(false);
                           handleLogout();
                         }}
@@ -221,13 +240,7 @@ const DashboardLayout = ({ children }) => {
         </main>
       </div>
 
-      {/* Click outside to close user menu */}
-      {isUserMenuOpen && (
-        <div
-          className="fixed inset-0 z-30"
-          onClick={() => setIsUserMenuOpen(false)}
-        />
-      )}
+      {/* El cierre al hacer click afuera se maneja con useEffect + ref */}
     </div>
   );
 };
