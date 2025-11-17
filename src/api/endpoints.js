@@ -14,6 +14,8 @@ const ENDPOINTS = {
     VERIFY_EMAIL: '/auth/verify-email',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
+    GOOGLE: '/auth/google',
+    GITHUB: '/auth/github',
   },
 
   // Users

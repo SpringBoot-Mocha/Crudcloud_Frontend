@@ -112,7 +112,7 @@ const DashboardLayout = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-visible">
         {/* Header - Premium Minimal */}
-        <header className="bg-white border-b border-slate-200/50 backdrop-blur-sm">
+        <header className="bg-white border-b border-slate-200/50 backdrop-blur-sm relative z-50">
           <div className="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             {/* Left Side */}
             <div className="flex items-center gap-4">
