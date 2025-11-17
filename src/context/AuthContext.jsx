@@ -1,59 +1,106 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import authService from '../services/authService';
 import subscriptionService from '../services/subscriptionService';
 
-export const AuthContext = createContext();
+const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Verificar token al cargar la aplicación
   useEffect(() => {
-    const token = authService.getToken();
-    const currentUser = authService.getCurrentUser();
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
 
-    if (token && currentUser) {
-      setUser(currentUser);
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
+      if (token && storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          
+          // TODO: Obtener suscripción cuando el método esté disponible
+          // const subscriptionData = await subscriptionService.getCurrentSubscription(parsedUser.id);
+          // setSubscription(subscriptionData);
+        } catch (error) {
+          console.error('Error al cargar datos de autenticación:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      }
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await authService.login(email, password);
-      setUser(response.user);
-      setIsAuthenticated(true);
+      const { token, user: userData } = await authService.login(email, password);
+      setUser(userData);
 
-      // Fetch and store current subscription
-      try {
-        const subscription = await subscriptionService.getCurrentSubscription(response.user.userId);
-        localStorage.setItem('currentSubscription', JSON.stringify(subscription));
-      } catch (error) {
-        console.warn('Could not fetch current subscription:', error.message);
-        // Continue even if subscription fetch fails - user might not have one yet
-      }
+      // TODO: Obtener suscripción
+      // const subscriptionData = await subscriptionService.getCurrentSubscription(userData.id);
+      // setSubscription(subscriptionData);
 
-      return response;
+      return { success: true };
     } catch (error) {
-      setIsAuthenticated(false);
-      setUser(null);
-      throw error;
+      return { success: false, error: error.message };
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (email, password, firstName = '', lastName = '') => {
+  const loginWithGoogle = async (googleToken) => {
     setLoading(true);
     try {
-      const response = await authService.register(email, password, firstName, lastName);
-      return response;
+      const { token, user: userData } = await authService.loginWithGoogle(googleToken);
+      setUser(userData);
+
+      // TODO: Obtener suscripción
+      // const subscriptionData = await subscriptionService.getCurrentSubscription(userData.id);
+      // setSubscription(subscriptionData);
+
+      return { success: true };
     } catch (error) {
-      throw error;
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginWithGitHub = async (githubToken) => {
+    setLoading(true);
+    try {
+      const { token, user: userData } = await authService.loginWithGitHub(githubToken);
+      setUser(userData);
+
+      // TODO: Obtener suscripción
+      // const subscriptionData = await subscriptionService.getCurrentSubscription(userData.id);
+      // setSubscription(subscriptionData);
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (userData) => {
+    setLoading(true);
+    try {
+      const { token, user: newUser } = await authService.register(userData);
+      setUser(newUser);
+
+      // TODO: Obtener suscripción
+      // const subscriptionData = await subscriptionService.getCurrentSubscription(newUser.id);
+      // setSubscription(subscriptionData);
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
     } finally {
       setLoading(false);
     }
@@ -61,23 +108,29 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     authService.logout();
-    localStorage.removeItem('currentSubscription');
     setUser(null);
-    setIsAuthenticated(false);
+    setSubscription(null);
   };
 
   const value = {
     user,
+    subscription,
     loading,
-    isAuthenticated,
+    isAuthenticated: !!user,
     login,
+    loginWithGoogle,
+    loginWithGitHub,
     register,
     logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

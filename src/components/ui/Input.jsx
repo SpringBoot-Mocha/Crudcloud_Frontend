@@ -45,19 +45,8 @@ const Input = React.forwardRef(({
 }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [internalValue, setInternalValue] = useState(value || '');
 
-  const currentValue = value !== undefined ? value : internalValue;
-  const hasValue = currentValue && currentValue.length > 0;
-
-  const handleChange = (e) => {
-    const newValue = e.target.value;
-    if (onChange) {
-      onChange(e);
-    } else {
-      setInternalValue(newValue);
-    }
-  };
+  const hasValue = value && value.length > 0;
 
   const inputType = type === 'password' && showPassword ? 'text' : type;
 
@@ -134,8 +123,8 @@ const Input = React.forwardRef(({
           ref={ref}
           type={inputType}
           disabled={disabled}
-          value={currentValue}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           maxLength={maxLength}
@@ -241,13 +230,13 @@ const Input = React.forwardRef(({
         </div>
 
         {/* Character Count */}
-        {showCharacterCount && maxLength && (
+        {showCharacterCount && maxLength && value && (
           <p className={`text-xs font-medium ml-2 ${
-            currentValue.length > maxLength * 0.9
+            value.length > maxLength * 0.9
               ? 'text-accent-rose-600'
               : 'text-dark-400'
           }`}>
-            {currentValue.length}/{maxLength}
+            {value.length}/{maxLength}
           </p>
         )}
       </div>

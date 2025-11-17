@@ -13,6 +13,7 @@ import AboutPage from '../pages/public/AboutPage';
 // Auth Pages
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
+import GitHubCallback from '../pages/auth/GitHubCallback';
 import { ProtectedRoute } from '../components/auth';
 
 // Dashboard Pages
@@ -48,6 +49,9 @@ const AppRoutes = () => {
             </AuthLayout>
           }
         />
+        
+        {/* GitHub OAuth Callback */}
+        <Route path="/auth/github/callback" element={<GitHubCallback />} />
 
         {/* Protected Routes */}
         <Route
