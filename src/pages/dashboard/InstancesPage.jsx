@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import { Button } from '../../components/ui';
-import { PlanSelectionModal } from '../../components/modals';
+import { PlanSelectionModal, ConfirmModal } from '../../components/modals';
 import { InstanceList, CreateInstanceModal } from '../../components/instances';
 import { useInstances } from '../../hooks/useInstances';
 import { usePlans } from '../../hooks/usePlans';
@@ -17,6 +17,16 @@ const InstancesPage = () => {
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isSelectingPlan, setIsSelectingPlan] = useState(false);
+  
+  // Confirm modal states
+  const [confirmModal, setConfirmModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: null,
+    isLoading: false,
+    variant: 'warning',
+  });
 
   useEffect(() => {
     fetchInstances();
@@ -61,15 +71,23 @@ const InstancesPage = () => {
 
   const handleDeleteInstance = async (id) => {
     const instanceName = instances.find(i => i.id === id)?.name || 'instancia';
-    if (window.confirm(`¿Estás seguro de que quieres eliminar "${instanceName}"? Esta acción no se puede deshacer.`)) {
-      try {
-        await deleteInstance(id);
-        success(`Instancia "${instanceName}" eliminada correctamente.`);
-      } catch (err) {
-        error(`Error al eliminar: ${err.message}`);
-        console.error('Error deleting instance:', err);
-      }
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Eliminar Instancia',
+      message: `¿Estás seguro de que quieres eliminar "${instanceName}"? Esta acción no se puede deshacer.`,
+      action: async () => {
+        try {
+          await deleteInstance(id);
+          success(`Instancia "${instanceName}" eliminada correctamente.`);
+        } catch (err) {
+          error(`Error al eliminar: ${err.message}`);
+          console.error('Error deleting instance:', err);
+          throw err;
+        }
+      },
+      isLoading: false,
+      variant: 'danger',
+    });
   };
 
   const handleStatusChange = async (id, status) => {
@@ -84,15 +102,38 @@ const InstancesPage = () => {
   };
 
   const handleRotatePassword = async (id) => {
-    if (window.confirm('¿Quieres rotar la contraseña de esta instancia?')) {
-      try {
-        await rotatePassword(id);
-        success('Contraseña rotada exitosamente.');
-      } catch (err) {
-        error(`Error al rotar contraseña: ${err.message}`);
-        console.error('Error rotating password:', err);
+    setConfirmModal({
+      isOpen: true,
+      title: 'Rotar Contraseña',
+      message: '¿Quieres rotar la contraseña de esta instancia? Se generará una nueva contraseña automáticamente.',
+      action: async () => {
+        try {
+          await rotatePassword(id);
+          success('Contraseña rotada exitosamente.');
+        } catch (err) {
+          error(`Error al rotar contraseña: ${err.message}`);
+          console.error('Error rotating password:', err);
+          throw err;
+        }
+      },
+      isLoading: false,
+      variant: 'warning',
+    });
+  };
+
+  const handleConfirmAction = async () => {
+    setConfirmModal((prev) => ({ ...prev, isLoading: true }));
+    try {
+      if (confirmModal.action) {
+        await confirmModal.action();
       }
+    } finally {
+      setConfirmModal((prev) => ({ ...prev, isLoading: false, isOpen: false }));
     }
+  };
+
+  const handleCloseConfirmModal = () => {
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
   };
 
   return (
@@ -123,6 +164,7 @@ const InstancesPage = () => {
         </div>
 
         {/* Stats Bar */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="px-6 py-4 rounded-lg bg-white border border-slate-200/50 backdrop-blur-sm">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Activas</p>
@@ -170,6 +212,19 @@ const InstancesPage = () => {
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleCreateInstance}
           isLoading={isCreating}
+        />
+
+        {/* Confirm Modal */}
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          onClose={handleCloseConfirmModal}
+          onConfirm={handleConfirmAction}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          confirmText={confirmModal.variant === 'danger' ? 'Eliminar' : 'Confirmar'}
+          cancelText="Cancelar"
+          variant={confirmModal.variant}
+          isLoading={confirmModal.isLoading}
         />
       </div>
     </DashboardLayout>
