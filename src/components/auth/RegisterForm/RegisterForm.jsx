@@ -1,12 +1,31 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button, Input } from '../../ui';
 import { useAuth } from '../../../hooks/useAuth';
+import { Check, X } from 'lucide-react';
+
+// Schema de validación con Zod
+const passwordSchema = z.string()
+  .min(8, 'Mínimo 8 caracteres')
+  .regex(/[A-Z]/, 'Necesita una mayúscula (A-Z)')
+  .regex(/[a-z]/, 'Necesita una minúscula (a-z)')
+  .regex(/[0-9]/, 'Necesita un número (0-9)')
+  .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, 'Necesita un símbolo (!@#$%^&*)');
+
+const registerSchema = z.object({
+  firstName: z.string().min(2, 'Nombre debe tener al menos 2 caracteres'),
+  lastName: z.string().min(2, 'Apellido debe tener al menos 2 caracteres'),
+  email: z.string().email('Email inválido'),
+  password: passwordSchema
+});
 
 const RegisterForm = ({ onSuccess = null }) => {
   const { register: registerUser } = useAuth();
   const { register, handleSubmit, watch, formState: { errors, isSubmitting }, setError } = useForm({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -86,22 +105,20 @@ const RegisterForm = ({ onSuccess = null }) => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5 }}
+        className="space-y-3"
       >
         <Input
           label="Contraseña"
           type="password"
-          {...register('password', {
-            required: 'Contraseña es requerida',
-            minLength: {
-              value: 6,
-              message: 'Contraseña debe tener al menos 6 caracteres'
-            }
-          })}
+          {...register('password')}
           error={errors.password?.message}
           placeholder="••••••••"
           variant="outlined"
           size="lg"
         />
+
+        {/* Indicador de fortaleza */}
+        <PasswordRequirements password={watch('password')} />
       </motion.div>
 
       {errors.submit && (
@@ -131,6 +148,68 @@ const RegisterForm = ({ onSuccess = null }) => {
         </Button>
       </motion.div>
     </motion.form>
+  );
+};
+
+// Componente de requisitos de contraseña
+const PasswordRequirements = ({ password = '' }) => {
+  const requirements = useMemo(() => ({
+    length: {
+      met: password.length >= 8,
+      label: 'Mínimo 8 caracteres'
+    },
+    uppercase: {
+      met: /[A-Z]/.test(password),
+      label: 'Una mayúscula (A-Z)'
+    },
+    lowercase: {
+      met: /[a-z]/.test(password),
+      label: 'Una minúscula (a-z)'
+    },
+    number: {
+      met: /[0-9]/.test(password),
+      label: 'Un número (0-9)'
+    },
+    symbol: {
+      met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+      label: 'Un símbolo (!@#$%^&*)'
+    }
+  }), [password]);
+
+  if (!password) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-2 p-3 bg-slate-50 rounded-lg border border-slate-200"
+    >
+      <p className="text-xs font-semibold text-slate-700">Requisitos:</p>
+
+      {Object.entries(requirements).map(([key, req]) => (
+        <motion.div
+          key={key}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 text-sm"
+        >
+          <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-colors ${
+            req.met ? 'bg-green-100' : 'bg-slate-200'
+          }`}>
+            {req.met ? (
+              <Check className="w-3 h-3 text-green-600" />
+            ) : (
+              <X className="w-3 h-3 text-slate-400" />
+            )}
+          </div>
+          <span className={`transition-colors ${
+            req.met ? 'text-green-700 font-medium' : 'text-slate-600'
+          }`}>
+            {req.label}
+          </span>
+        </motion.div>
+      ))}
+    </motion.div>
   );
 };
 

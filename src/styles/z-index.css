@@ -1,0 +1,47 @@
+/*
+ * Systematic Z-Index Scale
+ *
+ * Usage guidelines:
+ * - Use semantic variable names instead of arbitrary numbers
+ * - Keep z-index values between 0-50 for maintainability
+ * - Higher numbers = higher priority in stacking context
+ */
+
+:root {
+  /* Base layers (0-10) */
+  --z-index-base: 0;
+  --z-index-background: 1;
+  --z-index-content: 2;
+  --z-index-surface: 3;
+  --z-index-elevated: 4;
+
+  /* Interactive elements (10-20) */
+  --z-index-interactive: 10;
+  --z-index-dropdown: 11;
+  --z-index-sticky: 12;
+  --z-index-fixed: 13;
+
+  /* Overlay layers (20-30) */
+  --z-index-overlay: 20;
+  --z-index-modal: 21;
+  --z-index-popover: 22;
+  --z-index-tooltip: 23;
+  --z-index-toast: 24;
+
+  /* Topmost layers (30-40) */
+  --z-index-drawer: 30;
+  --z-index-dialog: 31;
+  --z-index-loading: 32;
+
+  /* Maximum layers (40-50) */
+  --z-index-maximum: 40;
+  --z-index-emergency: 50;
+}
+
+/*
+ * Usage examples:
+ * .background-element { z-index: var(--z-index-background); }
+ * .dropdown-menu { z-index: var(--z-index-dropdown); }
+ * .modal-overlay { z-index: var(--z-index-modal); }
+ * .loading-spinner { z-index: var(--z-index-loading); }
+ */

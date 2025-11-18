@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { usePlans } from '../hooks/usePlans';
+import { useInstances } from '../hooks/useInstances';
 import { Menu, X, LogOut, Settings, LayoutDashboard, Database, CreditCard, User, ChevronDown } from 'lucide-react';
 
 const DashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
+  const { currentSubscription } = usePlans();
+  const { instances } = useInstances();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -33,10 +37,34 @@ const DashboardLayout = ({ children }) => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Map plan names to instance limits
+  const getPlanLimit = (planName) => {
+    const limits = {
+      'Free': 2,
+      'Standard': 5,
+      'Premium': 10
+    };
+    return limits[planName] || 2; // default to Free limit
+  };
+
+  const getPlanName = () => {
+    return currentSubscription?.plan?.name || 'Free';
+  };
+
+  const getActiveInstanceCount = () => {
+    return instances?.filter(i => i.status === 'RUNNING').length || 0;
+  };
+
+  const planName = getPlanName();
+  const planLimit = getPlanLimit(planName);
+  const activeCount = getActiveInstanceCount();
+
+  // NOTE: Plans have been removed from main navigation.
+  // Plans are now shown as a modal when creating the 3rd instance.
+  // The /plans route still exists for direct access if needed.
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/instances', label: 'Instancias', icon: Database },
-    { path: '/plans', label: 'Planes', icon: CreditCard },
     { path: '/profile', label: 'Perfil', icon: User },
   ];
 
@@ -103,8 +131,8 @@ const DashboardLayout = ({ children }) => {
               isSidebarOpen ? 'opacity-100' : 'opacity-0 text-[10px]'
             }`}
           >
-            <p>Plan Free</p>
-            <p className="mt-1 text-slate-400">3 de 10 instancias</p>
+            <p>Plan {planName}</p>
+            <p className="mt-1 text-slate-400">{activeCount} de {planLimit} instancias</p>
           </div>
         </div>
       </aside>
@@ -144,7 +172,6 @@ const DashboardLayout = ({ children }) => {
                     <p className="text-sm font-medium text-slate-900">
                       {user?.name || user?.email?.split('@')[0]}
                     </p>
-                    <p className="text-xs text-slate-500">Admin</p>
                   </div>
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-white font-semibold text-sm">
                     {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
@@ -155,20 +182,23 @@ const DashboardLayout = ({ children }) => {
                 {/* User Dropdown Menu */}
                 {isUserMenuOpen && (
                   <div
-                    className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-white border border-slate-200/50 shadow-lg z-[9999] overflow-hidden animate-fade-in"
+                    className="fixed top-16 right-8 mt-2 w-56 rounded-xl bg-white border border-slate-200/50 shadow-xl z-[var(--z-index-dropdown)] overflow-hidden animate-fade-in"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {/* User Info Section */}
                     <div className="px-4 py-3 border-b border-slate-100/50 bg-slate-50/50">
-                      <p className="text-sm font-medium text-slate-900">{user?.email}</p>
-                      <p className="text-xs text-slate-500 mt-1">Cuenta activa</p>
+                      <p className="text-sm font-medium text-slate-900 truncate" title={user?.email}>{user?.email}</p>
+                      <p className="text-xs text-slate-500 mt-1">Plan {planName}</p>
                     </div>
 
                     {/* Menu Items */}
                     <div className="py-2">
                       <Link
                         to="/profile"
-                        onClick={() => setIsUserMenuOpen(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsUserMenuOpen(false);
+                        }}
                         className="flex items-center gap-3 px-4 py-2.5 text-slate-700 hover:bg-slate-50 transition-colors duration-150"
                       >
                         <User size={16} />
@@ -176,7 +206,10 @@ const DashboardLayout = ({ children }) => {
                       </Link>
                       <Link
                         to="/settings"
-                        onClick={() => setIsUserMenuOpen(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsUserMenuOpen(false);
+                        }}
                         className="flex items-center gap-3 px-4 py-2.5 text-slate-700 hover:bg-slate-50 transition-colors duration-150"
                       >
                         <Settings size={16} />

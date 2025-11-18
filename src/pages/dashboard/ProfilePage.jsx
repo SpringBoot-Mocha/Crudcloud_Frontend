@@ -32,7 +32,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Account Info Card */}
-        <div className="px-6 py-5 rounded-xl bg-white border border-slate-200/50 backdrop-blur-sm">
+        <div className="px-6 py-5 rounded-xl bg-white border border-slate-200/50">
           <h2 className="text-lg font-semibold text-slate-900 mb-5">
             Información de la Cuenta
           </h2>
@@ -55,7 +55,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Danger Zone */}
-        <div className="px-6 py-5 rounded-xl border-2 border-red-200/50 bg-red-50/30 backdrop-blur-sm">
+        <div className="px-6 py-5 rounded-xl border-2 border-red-200/50 bg-red-50/30">
           <div className="flex items-center gap-3 mb-4">
             <AlertTriangle size={20} className="text-red-600" />
             <h2 className="text-lg font-semibold text-red-900">Zona de Peligro</h2>

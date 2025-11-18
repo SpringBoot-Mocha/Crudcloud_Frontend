@@ -1,8 +1,12 @@
 import React from 'react';
-import { Pause, Play, RefreshCw, Trash2, Copy, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Pause, Play, RefreshCw, Trash2, Copy, CheckCircle, Clock, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import { normalizeInstance } from '../../../utils/engineMapper';
 
-const InstanceCard = ({ instance, onDelete, onStatusChange, onRotatePassword }) => {
-  const [copied, setCopied] = React.useState(false);
+const InstanceCard = ({ instance: rawInstance, onDelete, onStatusChange, onRotatePassword }) => {
+  // Normalize instance data from backend
+  const instance = normalizeInstance(rawInstance);
+  const [copiedType, setCopiedType] = React.useState(null);
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   const getStatusConfig = (status) => {
     const configs = {
@@ -40,10 +44,10 @@ const InstanceCard = ({ instance, onDelete, onStatusChange, onRotatePassword }) 
 
   const statusConfig = getStatusConfig(instance.status);
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text, type = 'general') => {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedType(type);
+    setTimeout(() => setCopiedType(null), 2000);
   };
 
   return (
@@ -51,7 +55,16 @@ const InstanceCard = ({ instance, onDelete, onStatusChange, onRotatePassword }) 
       {/* Header */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-slate-900 truncate">{instance.name}</h3>
+          <div className="flex items-center gap-2 group/copy mb-1">
+            <h3 className="text-lg font-semibold text-slate-900 truncate">{instance.name}</h3>
+            <button
+              onClick={() => copyToClipboard(instance.name, 'name')}
+              className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 opacity-0 group-hover/copy:opacity-100 flex-shrink-0"
+              title={copiedType === 'name' ? '¡Copiado!' : 'Copiar'}
+            >
+              <Copy size={14} />
+            </button>
+          </div>
           <p className="text-xs text-slate-500 mt-1">ID: {instance.id}</p>
         </div>
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${statusConfig.color} border ${statusConfig.textColor}`}>
@@ -69,7 +82,18 @@ const InstanceCard = ({ instance, onDelete, onStatusChange, onRotatePassword }) 
           </div>
           <div>
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Puerto</p>
-            <p className="text-sm font-medium text-slate-900">{instance.port}</p>
+            <div className="flex items-center gap-2 group/copy">
+              <p className="text-xs font-mono text-slate-600 bg-slate-50/50 px-3 py-2 rounded-lg flex-1 truncate">
+                {instance.port}
+              </p>
+              <button
+                onClick={() => copyToClipboard(instance.port, 'port')}
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 opacity-0 group-hover/copy:opacity-100"
+                title={copiedType === 'port' ? '¡Copiado!' : 'Copiar'}
+              >
+                <Copy size={14} />
+              </button>
+            </div>
           </div>
           <div className="col-span-2">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Host</p>
@@ -78,9 +102,9 @@ const InstanceCard = ({ instance, onDelete, onStatusChange, onRotatePassword }) 
                 {instance.host}
               </p>
               <button
-                onClick={() => copyToClipboard(instance.host)}
+                onClick={() => copyToClipboard(instance.host, 'host')}
                 className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 opacity-0 group-hover/copy:opacity-100"
-                title={copied ? '¡Copiado!' : 'Copiar'}
+                title={copiedType === 'host' ? '¡Copiado!' : 'Copiar'}
               >
                 <Copy size={14} />
               </button>
@@ -88,7 +112,40 @@ const InstanceCard = ({ instance, onDelete, onStatusChange, onRotatePassword }) 
           </div>
           <div className="col-span-2">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Usuario</p>
-            <p className="text-xs font-mono text-slate-600 bg-slate-50/50 px-3 py-2 rounded-lg">{instance.username}</p>
+            <div className="flex items-center gap-2 group/copy">
+              <p className="text-xs font-mono text-slate-600 bg-slate-50/50 px-3 py-2 rounded-lg flex-1 truncate">
+                {instance.username}
+              </p>
+              <button
+                onClick={() => copyToClipboard(instance.username, 'username')}
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 opacity-0 group-hover/copy:opacity-100"
+                title={copiedType === 'username' ? '¡Copiado!' : 'Copiar'}
+              >
+                <Copy size={14} />
+              </button>
+            </div>
+          </div>
+          <div className="col-span-2">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Contraseña</p>
+            <div className="flex items-center gap-2 group/copy">
+              <p className="text-xs font-mono text-slate-600 bg-slate-50/50 px-3 py-2 rounded-lg flex-1">
+                {passwordVisible ? instance.password : '•'.repeat(instance.password?.length || 12)}
+              </p>
+              <button
+                onClick={() => setPasswordVisible(!passwordVisible)}
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 opacity-0 group-hover/copy:opacity-100"
+                title={passwordVisible ? 'Ocultar' : 'Mostrar'}
+              >
+                {passwordVisible ? <EyeOff size={14} /> : <Eye size={14} />}
+              </button>
+              <button
+                onClick={() => copyToClipboard(instance.password, 'password')}
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 opacity-0 group-hover/copy:opacity-100"
+                title={copiedType === 'password' ? '¡Copiado!' : 'Copiar'}
+              >
+                <Copy size={14} />
+              </button>
+            </div>
           </div>
         </div>
       </div>

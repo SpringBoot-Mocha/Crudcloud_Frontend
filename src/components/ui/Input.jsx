@@ -46,7 +46,9 @@ const Input = React.forwardRef(({
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const hasValue = value && value.length > 0;
+  // For react-hook-form compatibility, we should not manage internal state
+  // when value and onChange are provided (controlled component)
+  const hasValue = value !== undefined && value !== null && value.length > 0;
 
   const inputType = type === 'password' && showPassword ? 'text' : type;
 
@@ -57,14 +59,21 @@ const Input = React.forwardRef(({
     text-dark-900
     disabled:opacity-50 disabled:cursor-not-allowed
     placeholder:text-dark-400 placeholder:font-normal
+    outline-none
   `;
 
   const variants = {
     default: `
-      input-base
-      ${error ? 'border-accent-rose-500 focus:ring-accent-rose-500/50 focus:border-accent-rose-500' : ''}
-      ${success ? 'border-accent-emerald-500 focus:ring-accent-emerald-500/50 focus:border-accent-emerald-500' : ''}
-      ${warning ? 'border-accent-amber-500 focus:ring-accent-amber-500/50 focus:border-accent-amber-500' : ''}
+      bg-white
+      border-2 border-dark-300
+      rounded-lg
+      transition-all duration-200
+      focus:border-brand-500
+      focus:ring-2 focus:ring-brand-500/20
+      focus:bg-white
+      ${error ? 'border-accent-rose-500 focus:border-accent-rose-500' : ''}
+      ${success ? 'border-accent-emerald-500 focus:border-accent-emerald-500' : ''}
+      ${warning ? 'border-accent-amber-500 focus:border-accent-amber-500' : ''}
     `,
     filled: `
       bg-dark-100
@@ -232,11 +241,11 @@ const Input = React.forwardRef(({
         {/* Character Count */}
         {showCharacterCount && maxLength && value && (
           <p className={`text-xs font-medium ml-2 ${
-            value.length > maxLength * 0.9
+            value && value.length > maxLength * 0.9
               ? 'text-accent-rose-600'
               : 'text-dark-400'
           }`}>
-            {value.length}/{maxLength}
+            {value ? value.length : 0}/{maxLength}
           </p>
         )}
       </div>

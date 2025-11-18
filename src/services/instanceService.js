@@ -16,30 +16,28 @@ const instanceService = {
 
   // Create new instance
   createInstance: async (engine, databaseName = null) => {
-    // Map engine names to database engine IDs (these should come from backend)
+    // Map engine names to database engine IDs (matching backend database_engine table)
+    // Order from DataLoader: PostgreSQL 14 (1), PostgreSQL 15 (2), PostgreSQL 16 (3),
+    // MySQL 8.0 (4), MongoDB 6.0 (5), Redis 7.0 (6), SQL Server 2022 (7), Cassandra 4.1 (8)
     const engineMap = {
-      'MySQL': 1,
-      'PostgreSQL': 2,
-      'MongoDB': 3,
-      'Redis': 4,
-      'SQL Server': 5,
-      'Cassandra': 6,
+      'PostgreSQL': 2,    // PostgreSQL 15 - recommended stable version
+      'MySQL': 4,         // MySQL 8.0
+      'MongoDB': 5,       // MongoDB 6.0
+      'Redis': 6,         // Redis 7.0
+      'SQL Server': 7,    // SQL Server 2022
+      'Cassandra': 8,     // Cassandra 4.1
     };
 
-    // Get user ID and subscription ID from localStorage (set during login/subscription)
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    // Get subscription ID from localStorage (userId is extracted from JWT by backend)
     const subscription = JSON.parse(localStorage.getItem('currentSubscription') || '{}');
-
-    if (!user.userId) {
-      throw new Error('User not authenticated');
-    }
 
     if (!subscription.id) {
       throw new Error('No active subscription found. Please subscribe to a plan first.');
     }
 
+    // Note: userId is NOT sent in the request body anymore (Phase 4 change)
+    // The backend extracts it from the JWT token in the Authorization header
     const response = await apiClient.post(ENDPOINTS.INSTANCES.BASE, {
-      userId: user.userId,
       subscriptionId: subscription.id,
       databaseEngineId: engineMap[engine] || 1,
       instanceName: databaseName || null,

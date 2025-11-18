@@ -1,46 +1,85 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import { Button } from '../../components/ui';
+import { PlanSelectionModal } from '../../components/modals';
 import { InstanceList, CreateInstanceModal } from '../../components/instances';
 import { useInstances } from '../../hooks/useInstances';
+import { usePlans } from '../../hooks/usePlans';
+import { useToast } from '../../hooks/useToast';
 import { Plus, Database } from 'lucide-react';
 
 const InstancesPage = () => {
-  const { instances, loading, fetchInstances, createInstance, deleteInstance, updateInstanceStatus, rotatePassword } = useInstances();
+  const { instances, loading, fetchInstances, createInstance, deleteInstance, updateInstanceStatus, rotatePassword, getActiveInstanceCount } = useInstances();
+  const { plans, currentSubscription, fetchPlans } = usePlans();
+  const { success, error, warning } = useToast();
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isSelectingPlan, setIsSelectingPlan] = useState(false);
 
   useEffect(() => {
     fetchInstances();
+    fetchPlans();
   }, []);
+
+  const handleNewInstanceClick = () => {
+    const activeCount = getActiveInstanceCount();
+    
+    // If user has 2 or more active instances, show plan selection first
+    if (activeCount >= 2) {
+      warning('Has alcanzado el límite de tu plan. Selecciona un plan superior para crear más instancias.');
+      setIsPlanModalOpen(true);
+    } else {
+      // Otherwise, show instance creation directly
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleSelectPlan = (planId) => {
+    // Plan selected, close plan modal and open instance creation
+    setIsPlanModalOpen(false);
+    setIsModalOpen(true);
+    success('Plan seleccionado. Ahora crea tu instancia.');
+    // Note: User can now create instance. In a full implementation,
+    // you might want to upgrade subscription here before allowing creation
+  };
 
   const handleCreateInstance = async (formValues) => {
     setIsCreating(true);
     try {
       await createInstance(formValues.engine, formValues.databaseName || null);
+      success(`Instancia de ${formValues.engine} creada exitosamente.`);
       setIsModalOpen(false);
-    } catch (error) {
-      console.error('Error creating instance:', error);
+    } catch (err) {
+      error(`Error al crear instancia: ${err.message}`);
+      console.error('Error creating instance:', err);
     } finally {
       setIsCreating(false);
     }
   };
 
   const handleDeleteInstance = async (id) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar esta instancia? Esta acción no se puede deshacer.')) {
+    const instanceName = instances.find(i => i.id === id)?.name || 'instancia';
+    if (window.confirm(`¿Estás seguro de que quieres eliminar "${instanceName}"? Esta acción no se puede deshacer.`)) {
       try {
         await deleteInstance(id);
-      } catch (error) {
-        console.error('Error deleting instance:', error);
+        success(`Instancia "${instanceName}" eliminada correctamente.`);
+      } catch (err) {
+        error(`Error al eliminar: ${err.message}`);
+        console.error('Error deleting instance:', err);
       }
     }
   };
 
   const handleStatusChange = async (id, status) => {
+    const statusLabel = status === 'SUSPENDED' ? 'pausada' : 'reanudada';
     try {
       await updateInstanceStatus(id, status);
-    } catch (error) {
-      console.error('Error updating status:', error);
+      success(`Instancia ${statusLabel} exitosamente.`);
+    } catch (err) {
+      error(`Error al actualizar estado: ${err.message}`);
+      console.error('Error updating status:', err);
     }
   };
 
@@ -48,8 +87,10 @@ const InstancesPage = () => {
     if (window.confirm('¿Quieres rotar la contraseña de esta instancia?')) {
       try {
         await rotatePassword(id);
-      } catch (error) {
-        console.error('Error rotating password:', error);
+        success('Contraseña rotada exitosamente.');
+      } catch (err) {
+        error(`Error al rotar contraseña: ${err.message}`);
+        console.error('Error rotating password:', err);
       }
     }
   };
@@ -73,7 +114,7 @@ const InstancesPage = () => {
           <Button
             variant="primary"
             size="lg"
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleNewInstanceClick}
             className="flex items-center gap-2"
           >
             <Plus size={18} />
@@ -84,9 +125,9 @@ const InstancesPage = () => {
         {/* Stats Bar */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="px-6 py-4 rounded-lg bg-white border border-slate-200/50 backdrop-blur-sm">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total</p>
-            <p className="text-2xl font-semibold text-slate-900 mt-2">{instances.length}</p>
-            <p className="text-xs text-slate-400 mt-1">instancias activas</p>
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Activas</p>
+            <p className="text-2xl font-semibold text-slate-900 mt-2">{instances.filter(i => i.status === 'RUNNING').length}</p>
+            <p className="text-xs text-slate-400 mt-1">instancias en ejecución</p>
           </div>
           <div className="px-6 py-4 rounded-lg bg-white border border-slate-200/50 backdrop-blur-sm">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">En Ejecución</p>
@@ -113,7 +154,17 @@ const InstancesPage = () => {
           onRotatePassword={handleRotatePassword}
         />
 
-        {/* Create Modal */}
+        {/* Plan Selection Modal - Shows when trying to create 3rd instance */}
+        <PlanSelectionModal
+          isOpen={isPlanModalOpen}
+          onClose={() => setIsPlanModalOpen(false)}
+          onSelectPlan={handleSelectPlan}
+          plans={plans}
+          isLoading={isSelectingPlan}
+          currentPlanId={currentSubscription?.plan_id}
+        />
+
+        {/* Create Instance Modal */}
         <CreateInstanceModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

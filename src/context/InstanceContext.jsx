@@ -85,6 +85,13 @@ export const InstanceProvider = ({ children }) => {
     }
   }, []);
 
+  // Helper method to count active instances (RUNNING or PENDING)
+  const getActiveInstanceCount = useCallback(() => {
+    return instances.filter(
+      (inst) => inst.status === 'RUNNING' || inst.status === 'PENDING'
+    ).length;
+  }, [instances]);
+
   const value = {
     instances,
     loading,
@@ -94,6 +101,7 @@ export const InstanceProvider = ({ children }) => {
     deleteInstance,
     updateInstanceStatus,
     rotatePassword,
+    getActiveInstanceCount,
   };
 
   return (

@@ -25,7 +25,7 @@ const ProfileForm = () => {
   }, [user]);
 
   return (
-    <div className="rounded-xl border border-slate-200/50 bg-white/60 backdrop-blur-sm overflow-hidden">
+    <div className="rounded-xl border border-slate-200/50 bg-white overflow-hidden">
       {/* Section Header */}
       <div className="px-6 py-5 border-b border-slate-100/50 bg-slate-50/30">
         <h2 className="text-lg font-semibold text-slate-900">Información del Perfil</h2>

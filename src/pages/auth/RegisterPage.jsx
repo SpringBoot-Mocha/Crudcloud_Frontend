@@ -8,8 +8,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const handleRegisterSuccess = () => {
-    // Redirigir al login después del registro
-    navigate('/login', { state: { message: 'Cuenta creada exitosamente. Por favor inicia sesión.' } });
+    navigate('/dashboard');
   };
 
   return (
@@ -19,20 +18,20 @@ const RegisterPage = () => {
       <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-r from-brand-100/40 to-brand-200/40 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-gradient-to-r from-slate-100/40 to-brand-100/40 rounded-full blur-3xl" />
 
-      <div className="relative z-10 w-full max-w-md">
+      <div className="relative w-full max-w-md">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Card className="w-full bg-white/95 backdrop-blur-sm border border-slate-200/60 shadow-2xl shadow-slate-200/50">
+          <Card className="w-full bg-white border border-slate-200/60 shadow-2xl shadow-slate-200/50">
             {/* Header */}
             <div className="mb-8">
               {/* Brand and Navigation */}
               <div className="flex items-center justify-between mb-8">
                 <motion.button
                   onClick={() => navigate('/')}
-                  className="group text-slate-700 hover:text-slate-900 transition-all duration-300 text-sm font-medium px-4 py-2.5 rounded-xl bg-white/80 backdrop-blur-lg border border-slate-200/70 hover:border-slate-300/80 hover:bg-white/95 flex items-center gap-3 shadow-sm hover:shadow-xl"
+                  className="group text-slate-700 hover:text-slate-900 transition-all duration-300 text-sm font-medium px-4 py-2.5 rounded-xl bg-white border border-slate-200/70 hover:border-slate-300/80 hover:bg-slate-50 flex items-center gap-3 shadow-sm hover:shadow-xl"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -92,12 +91,12 @@ const RegisterPage = () => {
 
         {/* Subtle floating elements */}
         <motion.div
-          className="absolute -top-2 -right-2 w-4 h-4 bg-brand-500/20 rounded-full"
+          className="absolute -top-2 -left-2 w-4 h-4 bg-brand-500/20 rounded-full"
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         />
         <motion.div
-          className="absolute -bottom-2 -left-2 w-3 h-3 bg-slate-500/20 rounded-full"
+          className="absolute -bottom-2 -right-2 w-3 h-3 bg-slate-500/20 rounded-full"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
         />

@@ -4,19 +4,37 @@ import { Database, Copy, Play, Pause, MoreVertical, Plus, ArrowUpRight, CheckCir
 import DashboardLayout from '../../layouts/DashboardLayout';
 import { Card, Button } from '../../components/ui';
 import { useInstances } from '../../hooks/useInstances';
+import { usePlans } from '../../hooks/usePlans';
+import { normalizeInstances } from '../../utils/engineMapper';
 
 const DashboardPage = () => {
-  const { instances, loading, fetchInstances } = useInstances();
+  const { instances: rawInstances, loading, fetchInstances } = useInstances();
+  const { currentSubscription } = usePlans();
   const [copiedHost, setCopiedHost] = useState(null);
 
   useEffect(() => {
     fetchInstances();
   }, []);
 
+  // Normalize instance data from backend (map containerName to name, databaseEngine ID to engine name)
+  const instances = normalizeInstances(rawInstances);
+
+  // Get plan limit
+  const getPlanLimit = (planName) => {
+    const limits = {
+      'Free': 2,
+      'Standard': 5,
+      'Premium': 10
+    };
+    return limits[planName] || 2; // default to Free limit
+  };
+
+  const planName = currentSubscription?.plan?.name || 'Free';
+  const maxInstances = getPlanLimit(planName);
+
   const runningCount = instances.filter((i) => i.status === 'RUNNING').length;
   const suspendedCount = instances.filter((i) => i.status === 'SUSPENDED').length;
   const totalCount = instances.length;
-  const maxInstances = 10;
 
   const getStatusBadgeColor = (status) => {
     switch (status) {
@@ -113,7 +131,7 @@ const DashboardPage = () => {
                 <div>
                   <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total</p>
                   <p className="text-3xl font-semibold text-slate-900 mt-3">{totalCount}</p>
-                  <p className="text-xs text-slate-400 mt-3">Plan Free activo</p>
+                  <p className="text-xs text-slate-400 mt-3">Plan {planName} activo</p>
                 </div>
                 <div className="w-10 h-10 rounded-lg bg-blue-50/50 flex items-center justify-center group-hover:bg-blue-100/50 transition-colors duration-300">
                   <Database size={18} className="text-blue-600" />
