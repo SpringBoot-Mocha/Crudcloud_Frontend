@@ -19,8 +19,14 @@ const LoginForm = ({ onSuccess = null }) => {
 
   const onSubmit = async (formValues) => {
     try {
-      await login(formValues.email, formValues.password);
-      if (onSuccess) onSuccess();
+      const result = await login(formValues.email, formValues.password);
+      
+      if (result?.success) {
+        if (onSuccess) onSuccess();
+      } else {
+        const errorMessage = result?.error || 'Error en el inicio de sesión';
+        setError('submit', { type: 'manual', message: errorMessage });
+      }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Error en el inicio de sesión';
       setError('submit', { type: 'manual', message: errorMessage });

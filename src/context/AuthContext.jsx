@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('❌ Error en login:', error);
+      return { success: false, error: error.response?.data?.message || error.message || 'Error en el inicio de sesión' };
     } finally {
       setLoading(false);
     }
@@ -91,7 +92,8 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     setLoading(true);
     try {
-      const { token, user: newUser } = await authService.register(userData);
+      const { email, password, firstName = '', lastName = '' } = userData;
+      const { token, user: newUser } = await authService.register(email, password, firstName, lastName);
       setUser(newUser);
 
       // TODO: Obtener suscripción
@@ -100,7 +102,8 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('❌ Error en registro:', error);
+      return { success: false, error: error.response?.data?.message || error.message || 'Error en el registro' };
     } finally {
       setLoading(false);
     }

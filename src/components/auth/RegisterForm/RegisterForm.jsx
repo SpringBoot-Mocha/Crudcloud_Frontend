@@ -17,8 +17,14 @@ const RegisterForm = ({ onSuccess = null }) => {
 
   const onSubmit = async (formValues) => {
     try {
-      await registerUser(formValues.email, formValues.password, formValues.firstName, formValues.lastName);
-      if (onSuccess) onSuccess();
+      const result = await registerUser(formValues);
+      
+      if (result?.success) {
+        if (onSuccess) onSuccess();
+      } else {
+        const errorMessage = result?.error || 'Error en el registro';
+        setError('submit', { type: 'manual', message: errorMessage });
+      }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Error en el registro';
       setError('submit', { type: 'manual', message: errorMessage });
