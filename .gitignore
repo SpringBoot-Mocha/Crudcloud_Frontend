@@ -27,6 +27,9 @@ Thumbs.db
 .vim/
 .code-workspace
 
+# Claude Code files
+.claude/
+
 # OS files
 .DS_Store
 .DS_Store?
