@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
 import PublicLayout from '../../layouts/PublicLayout';
 import { Button } from '../../components/ui';
-import { Database, Zap, Shield, TrendingUp, Users, Clock, CheckCircle } from 'lucide-react';
+import logo from '../../assets/logo.svg';
+import { Database, Zap, Server, Cloud, Shield, TrendingUp, Users, Clock, CheckCircle } from 'lucide-react';
 
 const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -90,7 +91,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-6"
+            className="space-y-8 md:space-y-10"
           >
             <motion.div
               initial={{ scale: 0.9 }}
@@ -104,10 +105,12 @@ const LandingPage = () => {
               </span>
             </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-slate-900 via-brand-600 to-brand-700 bg-clip-text text-transparent">
-                CrudCloud
-              </span>
+            <h1 className="w-full flex justify-center items-center">
+              <img
+                src={logo}
+                alt="CrudCloud"
+                className="block mx-auto h-24 sm:h-36 md:h-56 lg:h-64 mt-4 sm:mt-6 md:mt-8 mb-6"
+              />
             </h1>
 
             <motion.p
@@ -143,6 +146,49 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Database Engines Section */}
+      <section id="db-engines" className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+            className="text-center mb-10"
+          >
+            <h3 className="text-3xl font-bold text-slate-900 mb-2">Motores de Base de Datos</h3>
+            <p className="text-slate-600 max-w-2xl mx-auto">Gestionamos los motores más populares y escalables para tus aplicaciones.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+            {[
+              { name: 'MySQL', desc: 'Relacional, ligero y muy usado en producción', icon: Database },
+              { name: 'SQL Server', desc: 'Soporte empresarial de Microsoft', icon: Server },
+              { name: 'PostgreSQL', desc: 'Relacional avanzado y open source', icon: Database },
+              { name: 'Redis', desc: 'Almacenamiento en memoria para caché y pub/sub', icon: Zap },
+              { name: 'Cassandra', desc: 'NoSQL distribuido, alta disponibilidad', icon: Cloud },
+              { name: 'MongoDB', desc: 'NoSQL orientado a documentos', icon: Database },
+            ].map((engine, idx) => (
+              <motion.div
+                key={engine.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: idx * 0.06 }}
+                whileHover={{ y: -6 }}
+                tabIndex={0}
+                className="group relative p-8 bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500 text-center focus:outline-none focus:ring-2 focus:ring-brand-200 group-hover:border-brand-600 focus:border-brand-600"
+              >
+                <div className="mx-auto mb-4 w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-brand-600 to-brand-700 transition-transform duration-300 group-hover:scale-105 group-focus:scale-105">
+                  <div className="w-8 h-8 flex items-center justify-center rounded-md transition-colors duration-300 bg-transparent group-hover:bg-white/10 group-focus:bg-white/10">
+                    <engine.icon className="w-7 h-7 text-white group-hover:text-white group-focus:text-white" />
+                  </div>
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900 mb-1">{engine.name}</h4>
+                <p className="text-sm text-slate-600">{engine.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Features Section - Scroll Driven */}
       <section
         id="features"
@@ -190,7 +236,7 @@ const LandingPage = () => {
                 }}
                 className="group"
               >
-                <div className="relative p-8 bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-elevation-4 transition-all duration-500">
+                <div className="relative p-8 bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500">
                   {/* Icon Background */}
                   <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
                     <feature.icon className="w-8 h-8 text-white" />
@@ -298,7 +344,7 @@ const LandingPage = () => {
                   ease: "easeOut"
                 }}
                 whileHover={{ y: -8 }}
-                className={`relative bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-elevation-4 transition-all duration-500 ${
+                className={`relative bg-white rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500 ${
                   plan.popular ? 'ring-2 ring-brand-500' : ''
                 }`}
               >
@@ -397,7 +443,7 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white p-8 rounded-3xl shadow-elevation-2 border border-slate-100"
+                className="bg-white p-8 rounded-3xl shadow-elevation-2 border border-slate-100 hover:shadow-2xl hover:shadow-accent-emerald-500/50 transition-all duration-500"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-brand-500 to-brand-600 rounded-full flex items-center justify-center text-white text-lg">
