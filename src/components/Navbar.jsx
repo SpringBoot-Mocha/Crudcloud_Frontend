@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import logo from '../assets/logo.svg';
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -80,11 +82,8 @@ const Navbar = () => {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <Link
-              to="/"
-              className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-brand-600 to-brand-700 bg-clip-text text-transparent hover:from-brand-700 hover:to-brand-800 transition-all duration-300"
-            >
-              CrudCloud
+            <Link to="/" className="flex items-center gap-4">
+              <img src={logo} alt="CrudCloud" className="h-12 w-auto lg:h-14" />
             </Link>
           </motion.div>
 
@@ -99,7 +98,7 @@ const Navbar = () => {
               >
                 <button
                   onClick={() => scrollToSection(item.href)}
-                  className="text-gray-700 hover:text-gray-900 font-medium transition-all duration-300 relative group"
+                  className={`text-gray-700 hover:text-gray-900 font-medium transition-all duration-300 relative group`}
                 >
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-300 group-hover:w-full"></span>
@@ -132,7 +131,7 @@ const Navbar = () => {
                 >
                   <Link
                     to="/login"
-                    className="text-gray-700 hover:text-gray-900 font-medium transition-colors duration-300"
+                    className={`text-gray-700 hover:text-gray-900 font-medium transition-colors duration-300`}
                   >
                     Inicia Sesión
                   </Link>
@@ -155,7 +154,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            className={`text-gray-700 hover:bg-gray-100 lg:hidden p-2 rounded-lg transition-colors duration-200`}
             onClick={() => setIsOpen(!isOpen)}
             whileTap={{ scale: 0.95 }}
           >

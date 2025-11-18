@@ -5,6 +5,7 @@ import DashboardLayout from '../../layouts/DashboardLayout';
 import { Card, Button } from '../../components/ui';
 import { useInstances } from '../../hooks/useInstances';
 
+
 const DashboardPage = () => {
   const { instances, loading, fetchInstances } = useInstances();
   const [copiedHost, setCopiedHost] = useState(null);
