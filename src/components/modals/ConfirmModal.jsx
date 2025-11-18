@@ -33,7 +33,7 @@ const ConfirmModal = ({
       icon: AlertTriangle,
       iconColor: 'text-red-600',
       iconBgColor: 'bg-red-50',
-      confirmButtonVariant: 'destructive',
+      confirmButtonVariant: 'danger',
     },
     warning: {
       icon: AlertTriangle,
@@ -45,7 +45,7 @@ const ConfirmModal = ({
       icon: CheckCircle,
       iconColor: 'text-emerald-600',
       iconBgColor: 'bg-emerald-50',
-      confirmButtonVariant: 'primary',
+      confirmButtonVariant: 'success',
     },
   };
 
@@ -54,7 +54,6 @@ const ConfirmModal = ({
 
   const handleConfirm = async () => {
     await onConfirm();
-    onClose();
   };
 
   return (
@@ -62,18 +61,17 @@ const ConfirmModal = ({
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm border border-slate-200/50 animate-scale-in">
         {/* Header */}
         <div className="flex items-start justify-between p-6 border-b border-slate-200">
-          <div className="flex items-start gap-4 flex-1">
+          <div className="flex items-center gap-4 flex-1">
             <div className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center ${config.iconBgColor}`}>
               <IconComponent size={24} className={config.iconColor} />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-            </div>
+            <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
           </div>
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50"
+            className="flex-shrink-0 text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50"
+            aria-label="Cerrar modal"
           >
             <X size={20} />
           </button>
