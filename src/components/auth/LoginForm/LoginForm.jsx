@@ -1,17 +1,16 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Button, Input } from '../../ui';
 import { useAuth } from '../../../hooks/useAuth';
 
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID || 'Ov23litGnx91sQu0tdPN';
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
-const REDIRECT_URI = `${import.meta.env.VITE_APP_URL || 'http://localhost:3000'}/auth/github/callback`;
+const APP_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
+const GITHUB_REDIRECT_URI = `${APP_URL}/auth/github/callback`;
 
 const LoginForm = ({ onSuccess = null }) => {
-  const { login, loginWithGoogle } = useAuth();
-  const googleButtonRef = useRef(null);
+  const { login } = useAuth();
   const { register, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm({
     defaultValues: {
       email: '',
@@ -19,32 +18,18 @@ const LoginForm = ({ onSuccess = null }) => {
     }
   });
 
-  const handleGoogleButtonClick = () => {
-    googleButtonRef.current?.querySelector('button')?.click();
-  };
-
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      console.log('🔐 Google login iniciado');
-      const result = await loginWithGoogle(credentialResponse.credential);
-      console.log('✅ Resultado del login:', result);
-
-      if (result?.success) {
-        console.log('🚀 Redirigiendo al dashboard');
-        window.location.href = '/dashboard';
-      } else {
-        throw new Error(result?.error || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('❌ Error en Google login:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Error al iniciar sesión con Google';
-      setError('submit', { type: 'manual', message: errorMessage });
-    }
-  };
-
-  const handleGoogleError = () => {
-    setError('submit', { type: 'manual', message: 'Error al conectar con Google' });
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      console.log('🔐 Google login response:', codeResponse);
+      // Redirigir al callback con el código
+      window.location.href = `${APP_URL}/auth/google/callback?code=${codeResponse.code}`;
+    },
+    onError: (error) => {
+      console.error('❌ Google login error:', error);
+      setError('submit', { type: 'manual', message: 'Error al conectar con Google' });
+    },
+    flow: 'auth-code',
+  });
 
   const onSubmit = async (formValues) => {
     try {
@@ -56,14 +41,13 @@ const LoginForm = ({ onSuccess = null }) => {
     }
   };
 
-
   const handleGitHubLogin = () => {
     console.log('🚀 Iniciando login con GitHub');
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=read:user user:email`;
-    
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(GITHUB_REDIRECT_URI)}&scope=read:user+user:email`;
+
     console.log('📍 GitHub Auth URL:', githubAuthUrl);
-    console.log('📍 Redirect URI:', REDIRECT_URI);
-    
+    console.log('📍 Redirect URI:', GITHUB_REDIRECT_URI);
+
     // Redirigir directamente (no popup)
     window.location.href = githubAuthUrl;
   };
@@ -164,17 +148,6 @@ const LoginForm = ({ onSuccess = null }) => {
         </div>
       </motion.div>
 
-      {/* Hidden GoogleLogin Component */}
-      <div ref={googleButtonRef} style={{ display: 'none' }}>
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={handleGoogleError}
-          text="signin"
-          theme="outline"
-          size="large"
-        />
-      </div>
-
       {/* Social Login Buttons Container */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -189,7 +162,7 @@ const LoginForm = ({ onSuccess = null }) => {
         >
           <button
             type="button"
-            onClick={handleGoogleButtonClick}
+            onClick={() => googleLogin()}
             className="w-full h-10 flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95"
             title="Continuar con Google"
           >

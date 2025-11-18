@@ -18,10 +18,11 @@ export const AuthProvider = ({ children }) => {
         try {
           const parsedUser = JSON.parse(storedUser);
           setUser(parsedUser);
-          
-          // TODO: Obtener suscripción cuando el método esté disponible
-          // const subscriptionData = await subscriptionService.getCurrentSubscription(parsedUser.id);
-          // setSubscription(subscriptionData);
+
+          // Obtener suscripción actual del usuario
+          const subscriptionData = await subscriptionService.getCurrentSubscription(parsedUser.userId);
+          setSubscription(subscriptionData);
+          localStorage.setItem('currentSubscription', JSON.stringify(subscriptionData));
         } catch (error) {
           console.error('Error al cargar datos de autenticación:', error);
           localStorage.removeItem('token');
@@ -39,9 +40,10 @@ export const AuthProvider = ({ children }) => {
       const { token, user: userData } = await authService.login(email, password);
       setUser(userData);
 
-      // TODO: Obtener suscripción
-      // const subscriptionData = await subscriptionService.getCurrentSubscription(userData.id);
-      // setSubscription(subscriptionData);
+      // Obtener suscripción actual del usuario
+      const subscriptionData = await subscriptionService.getCurrentSubscription(userData.userId);
+      setSubscription(subscriptionData);
+      localStorage.setItem('currentSubscription', JSON.stringify(subscriptionData));
 
       return { success: true };
     } catch (error) {
@@ -54,9 +56,10 @@ export const AuthProvider = ({ children }) => {
       const { token, user: userData } = await authService.loginWithGoogle(googleToken);
       setUser(userData);
 
-      // TODO: Obtener suscripción
-      // const subscriptionData = await subscriptionService.getCurrentSubscription(userData.id);
-      // setSubscription(subscriptionData);
+      // Obtener suscripción actual del usuario
+      const subscriptionData = await subscriptionService.getCurrentSubscription(userData.userId);
+      setSubscription(subscriptionData);
+      localStorage.setItem('currentSubscription', JSON.stringify(subscriptionData));
 
       return { success: true };
     } catch (error) {
@@ -69,9 +72,10 @@ export const AuthProvider = ({ children }) => {
       const { token, user: userData } = await authService.loginWithGitHub(githubToken);
       setUser(userData);
 
-      // TODO: Obtener suscripción
-      // const subscriptionData = await subscriptionService.getCurrentSubscription(userData.id);
-      // setSubscription(subscriptionData);
+      // Obtener suscripción actual del usuario
+      const subscriptionData = await subscriptionService.getCurrentSubscription(userData.userId);
+      setSubscription(subscriptionData);
+      localStorage.setItem('currentSubscription', JSON.stringify(subscriptionData));
 
       return { success: true };
     } catch (error) {
@@ -89,9 +93,10 @@ export const AuthProvider = ({ children }) => {
       );
       setUser(newUser);
 
-      // TODO: Obtener suscripción
-      // const subscriptionData = await subscriptionService.getCurrentSubscription(newUser.id);
-      // setSubscription(subscriptionData);
+      // Obtener suscripción actual del usuario
+      const subscriptionData = await subscriptionService.getCurrentSubscription(newUser.userId);
+      setSubscription(subscriptionData);
+      localStorage.setItem('currentSubscription', JSON.stringify(subscriptionData));
 
       return { success: true };
     } catch (error) {
@@ -103,6 +108,7 @@ export const AuthProvider = ({ children }) => {
     authService.logout();
     setUser(null);
     setSubscription(null);
+    localStorage.removeItem('currentSubscription');
   };
 
   const value = {
