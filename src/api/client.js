@@ -4,7 +4,7 @@ import { getToken, clearAuth } from '../utils/storage';
 // Configuración base del cliente API
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1',
-  timeout: 15000,
+  timeout: 180000,  // 3 minutos máximo para cualquier solicitud
   headers: {
     'Content-Type': 'application/json',
   },
@@ -34,7 +34,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response Interceptor - Manejo centralizado de errores
+// Response Interceptor - Manejo centralizado de errores + Reintentos progresivos
 apiClient.interceptors.response.use(
   (response) => {
     // Log en desarrollo
@@ -50,6 +50,9 @@ apiClient.interceptors.response.use(
     if (import.meta.env.DEV) {
       console.error('[API] Error:', error.response?.data || error.message);
     }
+
+
+    // ===== MANEJO NORMAL DE ERRORES =====
 
     // Manejo de errores 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -103,7 +106,7 @@ apiClient.interceptors.response.use(
       });
     }
 
-    // Manejo de timeout
+    // Manejo de timeout (para otros endpoints que no sean /instances)
     if (error.code === 'ECONNABORTED') {
       return Promise.reject({
         ...error,
