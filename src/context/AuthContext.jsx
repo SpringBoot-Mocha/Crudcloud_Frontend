@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    setLoading(true);
     try {
       const { token, user: userData } = await authService.login(email, password);
       setUser(userData);
@@ -46,14 +45,11 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      throw error;
     }
   };
 
   const loginWithGoogle = async (googleToken) => {
-    setLoading(true);
     try {
       const { token, user: userData } = await authService.loginWithGoogle(googleToken);
       setUser(userData);
@@ -64,14 +60,11 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      throw error;
     }
   };
 
   const loginWithGitHub = async (githubToken) => {
-    setLoading(true);
     try {
       const { token, user: userData } = await authService.loginWithGitHub(githubToken);
       setUser(userData);
@@ -82,16 +75,18 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      throw error;
     }
   };
 
   const register = async (userData) => {
-    setLoading(true);
     try {
-      const { token, user: newUser } = await authService.register(userData);
+      const { token, user: newUser } = await authService.register(
+        userData.email,
+        userData.password,
+        userData.firstName,
+        userData.lastName
+      );
       setUser(newUser);
 
       // TODO: Obtener suscripción
@@ -100,9 +95,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      throw error;
     }
   };
 

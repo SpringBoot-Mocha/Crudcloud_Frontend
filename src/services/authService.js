@@ -3,13 +3,16 @@ import ENDPOINTS from '../api/endpoints';
 
 const authService = {
   register: async (email, password, firstName = '', lastName = '') => {
-    const name = `${firstName} ${lastName}`.trim();
     const response = await apiClient.post(ENDPOINTS.AUTH.REGISTER, {
       email,
       password,
-      name,
-      isOrganization: false,
+      firstName,
+      lastName,
     });
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
     return response.data;
   },
 
