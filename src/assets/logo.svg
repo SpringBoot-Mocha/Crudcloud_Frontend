@@ -19,7 +19,7 @@
   </g>
 
   <!-- Text -->
-  <g transform="translate(120,80)">
+  <g transform="translate(95,60)">
     <text x="0" y="0" font-family="Inter, Arial, Helvetica, sans-serif" font-weight="700" font-size="36" fill="url(#g1)">Crud</text>
     <text x="88" y="0" font-family="Inter, Arial, Helvetica, sans-serif" font-weight="700" font-size="36" fill="#124f4a">Cloud</text>
   </g>

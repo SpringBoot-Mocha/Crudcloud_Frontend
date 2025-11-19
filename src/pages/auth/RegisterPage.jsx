@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../../components/ui';
 import RegisterForm from '../../components/auth/RegisterForm/RegisterForm';
+import logo from '../../assets/logo.svg';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -53,13 +54,12 @@ const RegisterPage = () => {
                     Inicio
                   </span>
                 </motion.button>
-                <Link to="/" className="group flex items-center gap-3 hover:opacity-80 transition-opacity">
-                  <div className="w-8 h-8 bg-gradient-to-br from-brand-600 to-brand-700 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">CC</span>
-                  </div>
-                  <span className="text-slate-900 font-semibold text-lg group-hover:text-brand-600 transition-colors">
-                    CrudCloud
-                  </span>
+                <Link to="/" className="flex items-center gap-2">
+                  <img
+                    src={logo}
+                    alt="CrudCloud"
+                    className="h-14 w-auto transition-all duration-300 hover:drop-shadow-md"
+                  />
                 </Link>
               </div>
 
