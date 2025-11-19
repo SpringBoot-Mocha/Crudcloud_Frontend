@@ -82,7 +82,7 @@ const Navbar = () => {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <Link to="/" className="flex items-center gap-4">
+            <Link to="/" className="flex items-center">
               <img
                 src={logo}
                 alt="CrudCloud"
