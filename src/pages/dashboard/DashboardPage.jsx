@@ -7,6 +7,7 @@ import { useInstances } from '../../hooks/useInstances';
 import { usePlans } from '../../hooks/usePlans';
 import { normalizeInstances } from '../../utils/engineMapper';
 
+
 const DashboardPage = () => {
   const { instances: rawInstances, loading, fetchInstances } = useInstances();
   const { currentSubscription } = usePlans();
