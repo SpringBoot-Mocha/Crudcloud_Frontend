@@ -1,9 +1,11 @@
 import React, { createContext, useState, useCallback } from 'react';
 import planService from '../services/planService';
+import { useAuth } from './AuthContext';
 
 export const PlanContext = createContext();
 
 export const PlanProvider = ({ children }) => {
+  const { user } = useAuth();
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,7 +41,10 @@ export const PlanProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await planService.upgradePlan(planId);
+      if (!user || !user.userId) {
+        throw new Error('User not authenticated');
+      }
+      const result = await planService.upgradePlan(user.userId, planId);
       await fetchCurrentSubscription();
       return result;
     } catch (err) {
@@ -48,7 +53,7 @@ export const PlanProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user, fetchCurrentSubscription]);
 
   const value = {
     plans,

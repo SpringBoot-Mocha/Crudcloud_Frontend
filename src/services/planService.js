@@ -20,11 +20,11 @@ const planService = {
     return response.data;
   },
 
-  // Upgrade to a plan
-  upgradePlan: async (planId) => {
-    const response = await apiClient.post(ENDPOINTS.SUBSCRIPTIONS.UPGRADE, {
-      planId,
-    });
+  // Upgrade to a plan (with automatic email notification)
+  upgradePlan: async (userId, planId) => {
+    const response = await apiClient.put(
+      `${ENDPOINTS.SUBSCRIPTIONS.BASE}/${userId}/plan/${planId}`
+    );
     return response.data;
   },
 };

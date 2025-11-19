@@ -7,7 +7,7 @@ const GoogleCallbackPage = () => {
   const navigate = useNavigate();
   const { loginWithGoogle } = useAuth();
 
-  useEffect(() =>
+  useEffect(() => {
     const handleCallback = async () => {
       try {
         const code = searchParams.get('code');
