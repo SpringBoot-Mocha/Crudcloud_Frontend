@@ -211,8 +211,9 @@ const RegisterForm = ({ onSuccess = null }) => {
         >
           <button
             type="button"
+            disabled
             onClick={() => googleLogin()}
-            className="w-full h-10 flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95"
+            className="w-full h-10 flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 active:scale-95 opacity-50 cursor-not-allowed"
             title="Continuar con Google"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -232,8 +233,9 @@ const RegisterForm = ({ onSuccess = null }) => {
         >
           <button
             type="button"
+            disabled
             onClick={handleGitHubLogin}
-            className="w-full h-10 flex items-center justify-center gap-2 px-4 py-2 bg-[#24292e] text-white rounded-lg font-semibold hover:bg-[#1b1f23] transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#24292e]/50 active:scale-95"
+            className="w-full h-10 flex items-center justify-center gap-2 px-4 py-2 bg-[#24292e] text-white rounded-lg font-semibold hover:bg-[#1b1f23] transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#24292e]/50 active:scale-95 opacity-50 cursor-not-allowed"
             title="Continuar con GitHub"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
