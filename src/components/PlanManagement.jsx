@@ -18,7 +18,7 @@ const PlanManagement = () => {
 
   const currentPlan = {
     name: 'Standard',
-    price: '$49',
+    price: '$12,000',
     period: '/mes',
     startDate: '2024-01-15'
   };
@@ -28,50 +28,50 @@ const PlanManagement = () => {
       id: 'free',
       name: 'Free',
       price: '$0',
-      period: '/mes',
+      period: '',
       color: 'from-gray-500 to-gray-600',
-      description: 'Para comenzar',
+      description: 'Para desarrollo y pruebas',
       features: [
-        { name: 'Instancias activas', included: true, limit: '1' },
-        { name: 'Almacenamiento total', included: true, limit: '5 GB' },
-        { name: 'Backups automáticos', included: false },
-        { name: 'Soporte por email', included: true },
+        { name: 'Instancias activas', included: true, limit: '2' },
+        { name: 'Almacenamiento total', included: true, limit: '150 MB' },
+        { name: 'Soporte comunitario', included: true },
+        { name: 'MySQL y PostgreSQL', included: true },
         { name: 'Monitoreo avanzado', included: false },
-        { name: 'Team members', included: false, limit: '-' }
+        { name: 'Mercado Pago', included: false, limit: '-' }
       ],
       recommended: false
     },
     {
       id: 'standard',
       name: 'Standard',
-      price: '$49',
+      price: '$12,000',
       period: '/mes',
       color: 'from-violet-500 to-violet-600',
-      description: 'Para pequeños proyectos',
+      description: 'Para startups y proyectos medianos',
       features: [
         { name: 'Instancias activas', included: true, limit: '5' },
-        { name: 'Almacenamiento total', included: true, limit: '100 GB' },
-        { name: 'Backups automáticos', included: true },
-        { name: 'Soporte por email', included: true },
-        { name: 'Monitoreo avanzado', included: true },
-        { name: 'Team members', included: true, limit: '3' }
+        { name: 'Almacenamiento total', included: true, limit: '750 MB' },
+        { name: 'MySQL, PostgreSQL, MongoDB', included: true },
+        { name: 'Soporte prioritario', included: true },
+        { name: 'Monitoreo básico', included: true },
+        { name: 'Mercado Pago', included: true, limit: 'Sí' }
       ],
       recommended: true
     },
     {
       id: 'premium',
       name: 'Premium',
-      price: '$199',
+      price: '$39,900',
       period: '/mes',
       color: 'from-amber-500 to-amber-600',
-      description: 'Para empresas',
+      description: 'Para aplicaciones empresariales',
       features: [
-        { name: 'Instancias activas', included: true, limit: 'Ilimitadas' },
-        { name: 'Almacenamiento total', included: true, limit: '1 TB' },
-        { name: 'Backups automáticos', included: true },
-        { name: 'Soporte prioritario 24/7', included: true },
+        { name: 'Instancias activas', included: true, limit: '10' },
+        { name: 'Almacenamiento total', included: true, limit: '2,048 MB' },
+        { name: 'Todos los motores', included: true },
+        { name: 'Soporte 24/7', included: true },
         { name: 'Monitoreo avanzado', included: true },
-        { name: 'Team members', included: true, limit: 'Ilimitados' }
+        { name: 'Mercado Pago', included: true, limit: 'Sí' }
       ],
       recommended: false
     }
@@ -87,21 +87,21 @@ const PlanManagement = () => {
     },
     {
       label: 'Almacenamiento utilizado',
-      value: '24.8 GB',
-      max: '100 GB',
+      value: '500 MB',
+      max: '750 MB',
       icon: HardDrive,
       color: 'text-purple-600'
     },
     {
-      label: 'Team members',
-      value: '2',
-      max: '3',
+      label: 'Espacio disponible',
+      value: '250 MB',
+      max: '750 MB',
       icon: Users,
       color: 'text-green-600'
     },
     {
-      label: 'Backups',
-      value: '24',
+      label: 'Transacciones',
+      value: '12',
       icon: BarChart3,
       color: 'text-orange-600'
     }
@@ -273,9 +273,9 @@ const PlanManagement = () => {
             </thead>
             <tbody>
               {[
-                { date: '2024-10-28', concept: 'Plan Standard - Octubre', amount: '$49.00', status: 'Pagado' },
-                { date: '2024-09-28', concept: 'Plan Standard - Septiembre', amount: '$49.00', status: 'Pagado' },
-                { date: '2024-08-28', concept: 'Plan Standard - Agosto', amount: '$49.00', status: 'Pagado' }
+                { date: '2024-10-28', concept: 'Plan Standard - Octubre', amount: '$12,000.00', status: 'Pagado' },
+                { date: '2024-09-28', concept: 'Plan Standard - Septiembre', amount: '$12,000.00', status: 'Pagado' },
+                { date: '2024-08-28', concept: 'Plan Standard - Agosto', amount: '$12,000.00', status: 'Pagado' }
               ].map((invoice, idx) => (
                 <tr key={idx} className="border-b border-gray-200 hover:bg-gray-50 transition">
                   <td className="px-6 py-4">

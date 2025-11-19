@@ -9,19 +9,28 @@ import { Database, Zap, Server, Cloud, Shield, TrendingUp, Users, Clock, CheckCi
 const LandingPage = () => {
   const { scrollYProgress } = useScroll();
   const heroRef = useRef(null);
+  const dbEnginesRef = useRef(null);
   const featuresRef = useRef(null);
-  const statsRef = useRef(null);
+  const pricingRef = useRef(null);
   const testimonialsRef = useRef(null);
+  const aboutRef = useRef(null);
   const ctaRef = useRef(null);
 
   const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
+  const dbEnginesInView = useInView(dbEnginesRef, { once: true, amount: 0.2 });
   const featuresInView = useInView(featuresRef, { once: true, amount: 0.2 });
-  const statsInView = useInView(statsRef, { once: true, amount: 0.3 });
-  const testimonialsInView = useInView(testimonialsRef, { once: true, amount: 0.3 });
-  const ctaInView = useInView(ctaRef, { once: true, amount: 0.3 });
+  const pricingInView = useInView(pricingRef, { once: true, amount: 0.2 });
+  const testimonialsInView = useInView(testimonialsRef, { once: true, amount: 0.2 });
+  const aboutInView = useInView(aboutRef, { once: true, amount: 0.2 });
+  const ctaInView = useInView(ctaRef, { once: true, amount: 0.2 });
 
   // Handle anchor navigation from routes
   useEffect(() => {
+    // Disable automatic scroll restoration and handle it manually
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
     const hash = window.location.hash;
     if (hash) {
       const element = document.querySelector(hash);
@@ -30,6 +39,9 @@ const LandingPage = () => {
           element.scrollIntoView({ behavior: 'smooth' });
         }, 100);
       }
+    } else {
+      // Scroll to top if no hash
+      window.scrollTo(0, 0);
     }
   }, []);
 
@@ -134,12 +146,17 @@ const LandingPage = () => {
             className="flex justify-center"
           >
             <Link to="/register">
-              <Button
-                size="xl"
-                className="bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/40 transition-all duration-300 px-12 py-6 text-lg"
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
-                Comenzar Gratis
-              </Button>
+                <Button
+                  size="xl"
+                  className="bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/40 transition-all duration-300 px-12 py-6 text-lg font-semibold"
+                >
+                  Comenzar Gratis
+                </Button>
+              </motion.div>
             </Link>
           </motion.div>
 
@@ -147,11 +164,11 @@ const LandingPage = () => {
       </section>
 
       {/* Database Engines Section */}
-      <section id="db-engines" className="py-16 bg-slate-50">
+      <section id="db-engines" ref={dbEnginesRef} className="py-16 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+            animate={dbEnginesInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, ease: 'easeOut' }}
             className="text-center mb-10"
           >
@@ -171,7 +188,7 @@ const LandingPage = () => {
               <motion.div
                 key={engine.name}
                 initial={{ opacity: 0, y: 20 }}
-                animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                animate={dbEnginesInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: idx * 0.06 }}
                 whileHover={{ y: -6 }}
                 tabIndex={0}
@@ -263,13 +280,13 @@ const LandingPage = () => {
       {/* Plans Section - Integrated Pricing */}
       <section
         id="pricing"
-        ref={statsRef}
+        ref={pricingRef}
         className="py-24 bg-white relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
-            animate={statsInView ? { opacity: 1, y: 0 } : {}}
+            animate={pricingInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-16"
           >
@@ -293,6 +310,7 @@ const LandingPage = () => {
                 description: 'Perfecto para desarrollo y pruebas',
                 features: [
                   '2 Instancias de bases de datos',
+                  '150 MB de almacenamiento',
                   'MySQL y PostgreSQL',
                   'Gestión básica de contenedores',
                   'Soporte comunitario'
@@ -302,11 +320,12 @@ const LandingPage = () => {
               },
               {
                 name: 'Standard',
-                price: '$19',
+                price: '$12,000',
                 period: '/mes',
                 description: 'Ideal para startups y proyectos medianos',
                 features: [
                   '5 Instancias de bases de datos',
+                  '750 MB de almacenamiento',
                   'MySQL, PostgreSQL, MongoDB',
                   'Gestión avanzada de contenedores',
                   'Soporte prioritario',
@@ -318,11 +337,12 @@ const LandingPage = () => {
               },
               {
                 name: 'Premium',
-                price: '$49',
+                price: '$39,900',
                 period: '/mes',
                 description: 'Para aplicaciones empresariales',
                 features: [
                   '10 Instancias de bases de datos',
+                  '2,048 MB de almacenamiento',
                   'Todos los motores: MySQL, PostgreSQL, MongoDB, Redis',
                   'Gestión completa de contenedores',
                   'Soporte 24/7',
@@ -337,7 +357,7 @@ const LandingPage = () => {
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 40 }}
-                animate={statsInView ? { opacity: 1, y: 0 } : {}}
+                animate={pricingInView ? { opacity: 1, y: 0 } : {}}
                 transition={{
                   duration: 0.6,
                   delay: index * 0.1,
@@ -383,12 +403,18 @@ const LandingPage = () => {
                     ))}
                   </ul>
 
-                  <Link to="/register">
-                    <Button
-                      className="w-full bg-gradient-to-r from-brand-600 to-brand-700 text-white hover:from-brand-700 hover:to-brand-800"
+                  <Link to="/register" className="w-full">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full"
                     >
-                      Comenzar Ahora
-                    </Button>
+                      <Button
+                        className="w-full bg-gradient-to-r from-brand-600 to-brand-700 text-white hover:from-brand-700 hover:to-brand-800 font-semibold"
+                      >
+                        Comenzar Ahora
+                      </Button>
+                    </motion.div>
                   </Link>
                 </div>
               </motion.div>
@@ -462,11 +488,11 @@ const LandingPage = () => {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 bg-white">
+      <section id="about" ref={aboutRef} className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
-            animate={ctaInView ? { opacity: 1, y: 0 } : {}}
+            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-16"
           >
@@ -485,7 +511,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              animate={ctaInView ? { opacity: 1, x: 0 } : {}}
+              animate={aboutInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="space-y-6"
             >
@@ -512,7 +538,7 @@ const LandingPage = () => {
 
             <motion.div
               initial={{ opacity: 0, x: 40 }}
-              animate={ctaInView ? { opacity: 1, x: 0 } : {}}
+              animate={aboutInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="bg-gradient-to-br from-brand-50 to-brand-100 rounded-3xl p-8"
             >
@@ -567,12 +593,17 @@ const LandingPage = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <Link to="/register">
-                <Button
-                  size="xl"
-                  className="bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/40 transition-all duration-300"
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  Crear Cuenta Gratis
-                </Button>
+                  <Button
+                    size="xl"
+                    className="bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/40 transition-all duration-300 font-semibold"
+                  >
+                    Crear Cuenta Gratis
+                  </Button>
+                </motion.div>
               </Link>
             </motion.div>
 

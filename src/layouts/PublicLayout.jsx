@@ -94,7 +94,7 @@ const PublicLayout = ({ children }) => {
           <div className="border-t border-dark-700 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <p className="text-center md:text-left text-dark-400">
-                © 2024 CrudCloud. Todos los derechos reservados.
+                © 2025 CrudCloud. Todos los derechos reservados.
               </p>
               <div className="flex space-x-6">
                 <a href="#" className="text-dark-400 hover:text-brand-400 transition-colors duration-200">

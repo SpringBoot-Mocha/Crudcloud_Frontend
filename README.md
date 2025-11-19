@@ -340,15 +340,81 @@ npm run preview
 
 ### Docker Deployment
 
+#### Quick Start with Docker Compose
+
+The application is production-ready with Docker and Nginx. Use the provided `docker-compose.yml`:
+
+```bash
+# Clone and navigate to project root
+cd Crudcloud_Backend  # Root directory containing docker-compose.yml
+
+# Build and start all services
+docker compose up -d --build frontend
+
+# View logs
+docker compose logs -f frontend
+```
+
+#### Docker Build Configuration
+
+The Dockerfile uses a multi-stage build for optimal image size:
+
+1. **Build Stage**: Node 21 Alpine
+   - Installs dependencies with `npm install`
+   - Copies `.env.docker` for build-time configuration
+   - Creates optimized production build with `npm run build`
+
+2. **Runtime Stage**: Nginx Alpine
+   - Serves static assets from `/usr/share/nginx/html`
+   - Uses custom Nginx configuration for SPA routing
+   - Includes health checks and security headers
+
+#### Environment Configuration for Docker
+
+Create `.env.docker` in the project root for production:
+
+```env
+# API Configuration - MUST use HTTPS to avoid Mixed Content errors
+VITE_API_BASE_URL=https://api.yourdomain.com/api/v1
+VITE_API_TIMEOUT=15000
+
+# Application Settings
+VITE_APP_NAME=CrudCloud
+VITE_APP_VERSION=1.0.0
+VITE_APP_URL=https://yourdomain.com
+
+# OAuth Configuration
+VITE_GOOGLE_CLIENT_ID=your-google-client-id
+VITE_GITHUB_CLIENT_ID=your-github-client-id
+
+# Feature Flags
+VITE_ENABLE_MOCK_API=false
+VITE_ENABLE_DEBUG_LOGGING=false
+
+# Mercado Pago
+VITE_MP_PUBLIC_KEY=your-mercadopago-key
+```
+
+#### Manual Docker Build
+
 ```bash
 # Build Docker image
 docker build -t crudcloud-frontend .
 
 # Run container
-docker run -p 5173:5173 \
-  -e VITE_API_BASE_URL=https://api.crudcloud.com/api \
+docker run -d \
+  --name crudcloud-frontend \
+  -p 3001:80 \
+  -e VITE_API_BASE_URL=https://api.yourdomain.com/api/v1 \
   crudcloud-frontend
 ```
+
+#### Production Deployment Notes
+
+- **HTTPS Required**: Always use `https://` URLs in `VITE_API_BASE_URL` to avoid Mixed Content errors
+- **Reverse Proxy**: Use Nginx as reverse proxy for SSL/TLS termination
+- **Health Checks**: Container includes health checks for orchestration
+- **Logging**: Nginx access logs available in volume `frontend-logs:/var/log/nginx`
 
 ---
 

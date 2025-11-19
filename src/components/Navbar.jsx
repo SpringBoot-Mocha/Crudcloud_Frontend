@@ -83,7 +83,11 @@ const Navbar = () => {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Link to="/" className="flex items-center gap-4">
-              <img src={logo} alt="CrudCloud" className="h-12 w-auto lg:h-14" />
+              <img
+                src={logo}
+                alt="CrudCloud"
+                className="h-14 w-auto lg:h-16 transition-all duration-300 hover:drop-shadow-lg"
+              />
             </Link>
           </motion.div>
 
@@ -131,7 +135,7 @@ const Navbar = () => {
                 >
                   <Link
                     to="/login"
-                    className={`text-gray-700 hover:text-gray-900 font-medium transition-colors duration-300`}
+                    className="px-6 py-2.5 rounded-xl font-medium border border-brand-600/50 text-brand-600 hover:border-brand-600 hover:bg-brand-600/5 transition-all duration-300"
                   >
                     Inicia Sesión
                   </Link>
@@ -219,7 +223,7 @@ const Navbar = () => {
                       >
                         <Link
                           to="/login"
-                          className="block w-full text-center text-gray-700 font-medium py-3 border border-gray-300 rounded-xl hover:border-gray-400 transition-colors duration-200"
+                          className="block w-full text-center py-3 rounded-xl font-medium border border-brand-600/50 text-brand-600 hover:border-brand-600 hover:bg-brand-600/5 transition-all duration-300"
                           onClick={() => setIsOpen(false)}
                         >
                           Inicia Sesión

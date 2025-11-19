@@ -76,7 +76,7 @@ const AboutPage = () => {
       {/* Stats Section */}
       <section className="py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
         <Card>
-          <h3 className="text-4xl font-bold text-blue-600 mb-2">Desde 2024</h3>
+          <h3 className="text-4xl font-bold text-blue-600 mb-2">Desde 2025</h3>
           <p className="text-gray-600">Nacida con la misión de simplificar</p>
         </Card>
         <Card>
